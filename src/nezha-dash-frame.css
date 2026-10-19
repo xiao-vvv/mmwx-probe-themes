@@ -1,0 +1,293 @@
+.nezha-dash-frame {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100vh;
+  height: 100dvh;
+  overflow: hidden;
+  isolation: isolate;
+  background: #f7f7f5;
+}
+
+.nezha-dash-frame__iframe {
+  position: absolute;
+  inset: 0;
+  display: block;
+  /* iOS WebKit 会把 iframe 撑到内容的固有宽高(手机上按桌面宽渲染再压扁→叠字),
+     width:1px + min-width:100% 是标准 workaround, 强制视口宽随容器 */
+  width: 1px;
+  min-width: 100%;
+  height: 1px;
+  min-height: 100%;
+  border: 0;
+  background: #f7f7f5;
+}
+
+.nezha-dash-frame__status {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 24px;
+  color: #191919;
+  background: #f7f7f5;
+  font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-size: 14px;
+  line-height: 1.5;
+  text-align: center;
+}
+
+.nezha-dash-frame__status strong {
+  font-size: 16px;
+}
+
+.nezha-dash-frame__status button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  min-height: 36px;
+  margin-top: 4px;
+  padding: 7px 11px;
+  border: 1px solid rgba(25, 25, 25, 0.25);
+  border-radius: 4px;
+  color: #191919;
+  background: #ffffff;
+  font: inherit;
+  letter-spacing: 0;
+  cursor: pointer;
+}
+
+.nezha-dash-frame__status button:hover,
+.nezha-dash-frame__status button:focus-visible {
+  border-color: rgba(25, 25, 25, 0.5);
+}
+
+.nezha-dash-frame__status button:focus-visible {
+  outline: 2px solid #2563eb;
+  outline-offset: 2px;
+}
+
+.nezha-dash-frame__spinner {
+  animation: nezha-dash-frame-spin 800ms linear infinite;
+}
+
+@keyframes nezha-dash-frame-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* 与哪吒主题同款圆体(同源文件同缓存) */
+@font-face {
+  font-family: "Google Sans";
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url("/themes/nezha-dash/fonts/GoogleSans.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "BC Tsukushi SMaru";
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url("/themes/nezha-dash/fonts/TsukushiSMaru.woff2") format("woff2");
+}
+
+.nezha-dash-frame__switcher {
+  position: absolute;
+  /* 28px 起点与主题自身顶部按钮行大致同基线 */
+  top: max(28px, env(safe-area-inset-top));
+  right: max(12px, env(safe-area-inset-right));
+  z-index: 3;
+  color: #191919;
+  font-family: "Google Sans", "BC Tsukushi SMaru", "PingFang SC", system-ui,
+    "Microsoft YaHei", sans-serif;
+  font-size: 13px;
+  line-height: 1.3;
+}
+
+/* ===== 皮肤适配: dash(farm)=农场方钮(方正圆角/深棕描边/金黄底/硬阴影) ===== */
+.nezha-dash-frame__switcher.is-farm .nezha-dash-frame__trigger {
+  border: 2px solid #76472a;
+  border-radius: 9px;
+  background: #efb94f;
+  color: #2e1d13;
+  font-weight: 700;
+  box-shadow: 2px 3px 0 rgba(66, 35, 17, 0.3);
+  backdrop-filter: none;
+}
+
+.nezha-dash-frame__switcher.is-farm .nezha-dash-frame__trigger:hover,
+.nezha-dash-frame__switcher.is-farm .nezha-dash-frame__trigger:focus-visible {
+  border-color: #76472a;
+  background: #efb94f;
+  filter: brightness(1.07);
+}
+
+.nezha-dash-frame__switcher.is-farm .nezha-dash-frame__menu {
+  border: 2px solid #76472a;
+  border-radius: 11px;
+  background: #fffdf2;
+  box-shadow: 3px 4px 0 rgba(66, 35, 17, 0.3);
+  color: #2e1d13;
+}
+
+.nezha-dash-frame__switcher.is-farm .nezha-dash-frame__menu button:hover,
+.nezha-dash-frame__switcher.is-farm .nezha-dash-frame__menu button[aria-selected="true"] {
+  background: rgba(239, 185, 79, 0.35);
+}
+
+.nezha-dash-frame__switcher.is-farm .nezha-dash-frame__menu button svg {
+  color: #76472a;
+}
+
+/* ===== 皮肤适配: beauty=玻璃圆钮(全圆角/白玻璃/柔阴影) ===== */
+.nezha-dash-frame__switcher.is-beauty .nezha-dash-frame__trigger {
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.72);
+  color: #172033;
+  box-shadow: 0 6px 20px rgba(32, 49, 64, 0.16);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+
+.nezha-dash-frame__switcher.is-beauty .nezha-dash-frame__trigger:hover,
+.nezha-dash-frame__switcher.is-beauty .nezha-dash-frame__trigger:focus-visible {
+  border-color: rgba(255, 255, 255, 0.95);
+  background: rgba(255, 255, 255, 0.86);
+}
+
+.nezha-dash-frame__switcher.is-beauty .nezha-dash-frame__menu {
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.92);
+  box-shadow: 0 10px 28px rgba(32, 49, 64, 0.16);
+  color: #172033;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+
+.nezha-dash-frame__switcher.is-beauty .nezha-dash-frame__menu button {
+  border-radius: 8px;
+}
+
+.nezha-dash-frame__switcher.is-beauty .nezha-dash-frame__menu button:hover,
+.nezha-dash-frame__switcher.is-beauty .nezha-dash-frame__menu button[aria-selected="true"] {
+  background: rgba(56, 72, 87, 0.12);
+}
+
+.nezha-dash-frame__switcher.is-beauty .nezha-dash-frame__menu button svg {
+  color: #237967;
+}
+
+.nezha-dash-frame__trigger,
+.nezha-dash-frame__menu button {
+  appearance: none;
+  margin: 0;
+  color: inherit;
+  font: inherit;
+  letter-spacing: 0;
+}
+
+.nezha-dash-frame__trigger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  min-height: 36px;
+  padding: 7px 10px;
+  border: 1px solid rgba(25, 25, 25, 0.2);
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.94);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.12);
+  cursor: pointer;
+  backdrop-filter: blur(8px);
+}
+
+.nezha-dash-frame__trigger:hover,
+.nezha-dash-frame__trigger:focus-visible {
+  border-color: rgba(25, 25, 25, 0.45);
+  background: #ffffff;
+}
+
+.nezha-dash-frame__trigger:focus-visible,
+.nezha-dash-frame__menu button:focus-visible {
+  outline: 2px solid #2563eb;
+  outline-offset: 2px;
+}
+
+.nezha-dash-frame__trigger .is-open {
+  transform: rotate(180deg);
+}
+
+.nezha-dash-frame__trigger svg:last-child {
+  transition: transform 120ms ease;
+}
+
+.nezha-dash-frame__menu {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  width: 184px;
+  max-width: calc(100vw - 24px);
+  max-height: min(360px, calc(100dvh - 70px));
+  overflow-y: auto;
+  padding: 4px;
+  border: 1px solid rgba(25, 25, 25, 0.18);
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.98);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.16);
+}
+
+.nezha-dash-frame__menu button {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  width: 100%;
+  min-height: 34px;
+  padding: 7px 9px;
+  border: 0;
+  border-radius: 3px;
+  background: transparent;
+  cursor: pointer;
+  text-align: left;
+}
+
+.nezha-dash-frame__menu button:hover,
+.nezha-dash-frame__menu button[aria-selected="true"] {
+  background: #ededeb;
+}
+
+.nezha-dash-frame__menu button svg {
+  flex: 0 0 auto;
+  color: #2563eb;
+}
+
+/* 2026-08-18: 切换器固定顶部(此前 ≤1300px 会挪到右下角); 手机上收成图标钮,
+   下移到主题自身顶部按钮行下方, 避免同色同尺寸叠在原生按钮上难分辨 */
+@media (max-width: 520px) {
+  .nezha-dash-frame__switcher {
+    top: max(64px, calc(env(safe-area-inset-top) + 52px));
+  }
+
+  .nezha-dash-frame__trigger span {
+    display: none;
+  }
+
+  .nezha-dash-frame__trigger {
+    width: 36px;
+    padding: 7px;
+  }
+
+  .nezha-dash-frame__trigger svg:last-child {
+    display: none;
+  }
+}

@@ -1,0 +1,396 @@
+import { useEffect, useMemo, useState } from 'react'
+import { NodeDetailPage } from '@/pages/NodeDetail'
+import { TrafficPage } from '@/pages/Traffic'
+import { BillingPage } from '@/pages/Billing'
+import { HubPage } from '@/pages/Hub'
+import { V2DemoPage } from '@/pages/V2Demo'
+import { OverviewV2Page } from '@/pages/OverviewV2'
+import { NodesV2Page } from '@/pages/NodesV2'
+import { ErrorBoundary } from '@/components/ErrorBoundary'
+import { useKomari } from '@/hooks/useKomari'
+import { useGlobalHistory } from '@/hooks/useGlobalHistory'
+import { MOCK_NODES, MOCK_RECORDS } from '@/data/mock'
+import { ThemeCover } from '@/components/ThemeCover'
+import { type Theme } from '@/components/atoms/ThemePicker'
+import { useViewVersion } from '@/components/atoms/ViewVersionSwitcher'
+import { useRoute } from '@/router/route'
+import { applyFontScale, parseFontScale } from '@/utils/fontScale'
+import { applyUiScale, parseUiScale } from '@/utils/uiScale'
+import { setBpsUnitMode, parseBpsUnitMode } from '@/utils/format'
+
+const THEME_KEY = 'ran.theme'
+/** Set to '1' when the user has explicitly picked a theme via the ThemePicker. */
+const THEME_USER_SET_KEY = 'ran.theme.user'
+
+const VALID_THEMES: Theme[] = ['ran-night', 'ran-mist', 'ran-ember', 'ran-sakura', 'ran-lavender', 'ran-tomcat', 'ran-teal', 'ran-midnight', 'ran-mint', 'ran-butter', 'ran-ji']
+
+function isValidTheme(v: unknown): v is Theme {
+  return VALID_THEMES.includes(v as Theme)
+}
+
+function loadTheme(): Theme {
+  try {
+    const v = localStorage.getItem(THEME_KEY)
+    if (isValidTheme(v)) return v
+  } catch {
+    /* ignore */
+  }
+  return 'ran-night'
+}
+
+/** Detect ?cover URL param to render the theme cover card alone (used to generate preview.png). */
+function isCoverMode(): boolean {
+  if (typeof window === 'undefined') return false
+  return new URLSearchParams(window.location.search).has('cover')
+}
+
+// Early bailout: if Komari SPA-served us index.html on the /map URL
+// (because the user refreshed /map, which has no real file behind it
+// after MapApp's history.replaceState), bounce immediately to map.html
+// instead of letting the main app render Overview. Runs at module load
+// so it happens before React even renders.
+if (
+  typeof window !== 'undefined' &&
+  window.location.protocol !== 'file:' &&
+  /\/map\/?$/.test(window.location.pathname)
+) {
+  window.location.replace(
+    './map.html' + window.location.search + window.location.hash,
+  )
+}
+
+export default function App({ initialTheme }: { initialTheme?: string }) {
+  // 主题优先级: 主控明确下发变体(ran-night/ran-mist) > 用户手动选过(ran.theme.user) > 本地缓存 > ran-night
+  // 主控只下发 'ran'(无变体) → 用 Ran 默认主题(ran-mist), 忽略用户缓存
+  const [theme, setTheme] = useState<Theme>(() => {
+    if (initialTheme === 'ran') return 'ran-mist'
+    if (isValidTheme(initialTheme)) return initialTheme
+    let userSet = false
+    try { userSet = !!localStorage.getItem(THEME_USER_SET_KEY) } catch { /* ignore */ }
+    if (userSet) return loadTheme()
+    return loadTheme()
+  })
+  const handleThemeChange = (t: Theme) => {
+    try { localStorage.setItem(THEME_USER_SET_KEY, '1') } catch { /* ignore */ }
+    setTheme(t)
+  }
+  const route = useRoute()
+  const { nodes, records, config, conn, ping, lastUpdate, pingByNode, pingLossByNode } = useKomari()
+
+  // View version (v1 classic vs v2 modern). Reads:
+  //   1. user's localStorage preference (highest)
+  //   2. config.theme_settings.default_view (admin's choice)
+  //   3. 'v2' (built-in fallback)
+  const [viewVersion, setViewVersion] = useViewVersion(
+    config?.theme_settings?.default_view,
+  )
+
+  useEffect(() => {
+    document.body.setAttribute('data-theme', theme)
+    try {
+      localStorage.setItem(THEME_KEY, theme)
+    } catch {
+      /* ignore */
+    }
+    // 卸载(切到其他主题)时清理, 避免 tokens.css 全局 body{color:var(--fg-0)} 污染新主题
+    return () => {
+      document.body.removeAttribute('data-theme')
+    }
+  }, [theme])
+
+  // 后台 default_theme — 仅在用户从未手动选过、且主控未明确下发变体时生效。
+  useEffect(() => {
+    try {
+      if (localStorage.getItem(THEME_USER_SET_KEY)) return
+    } catch { /* ignore */ }
+    if (isValidTheme(initialTheme)) return
+    const raw = config?.theme_settings?.default_theme
+    if (isValidTheme(raw)) setTheme(raw)
+  }, [config?.theme_settings?.default_theme, initialTheme])
+
+  // 字号档位 — 跟随 Komari 后台 theme_settings.font_scale 实时变化。
+  // 写到 <html> 上的 CSS 变量,各组件通过 contentFs() 读取。
+  useEffect(() => {
+    const raw = config?.theme_settings?.font_scale
+    applyFontScale(parseFontScale(raw))
+  }, [config?.theme_settings?.font_scale])
+
+  // 整体 UI 缩放 — 跟随 theme_settings.ui_scale,用 CSS zoom 整体放大。
+  useEffect(() => {
+    const raw = config?.theme_settings?.ui_scale
+    applyUiScale(parseUiScale(raw))
+  }, [config?.theme_settings?.ui_scale])
+
+  // 流量单位策略 — 跟随 theme_settings.bps_unit。
+  // formatBps / compactBps 内部读取模块状态;改完触发组件 re-render
+  // 是靠 config 变化本身(useKomari 返回新 config 引用),
+  // 不需要单独发广播。
+  useEffect(() => {
+    const raw = config?.theme_settings?.bps_unit
+    setBpsUnitMode(parseBpsUnitMode(raw))
+  }, [config?.theme_settings?.bps_unit])
+
+  // Cover mode — render only the theme thumbnail card.
+  if (isCoverMode()) {
+    const params = new URLSearchParams(window.location.search)
+    const coverTheme = (params.get('theme') as Theme) || theme
+    return (
+      <div
+        style={{
+          display: 'inline-block',
+          padding: 0,
+          margin: 0,
+          background: 'transparent',
+        }}
+      >
+        <ThemeCover theme={coverTheme} />
+      </div>
+    )
+  }
+
+  // Dev-only mock fallback: only kick in when running outside a real Komari host
+  // (e.g. file:// preview, or an empty origin). On a real http(s) origin we wait
+  // for the API to load — using mock there would briefly route a real-uuid detail
+  // page to "Node not found" before the WS data lands, causing flicker on refresh.
+  const isDevPreview =
+    typeof window !== 'undefined' &&
+    (window.location.protocol === 'file:' || window.location.origin === 'null')
+  const useMockFallback = isDevPreview && nodes.length === 0
+  const displayNodes = useMockFallback ? MOCK_NODES : nodes
+  const displayRecords = useMockFallback ? MOCK_RECORDS : records
+
+  // Global per-node + aggregated history — fetched once, shared across pages.
+  // Skipped in mock-fallback (no real API to hit).
+  const realUuids = useMemo(
+    () => (useMockFallback ? [] : displayNodes.map((n) => n.uuid)),
+    [displayNodes, useMockFallback],
+  )
+  const globalHistory = useGlobalHistory(realUuids, 1)
+
+  const siteName = config?.site_name || config?.sitename || '岚 · Komari'
+
+  // Keep the browser tab title in sync with the backend-configured site name
+  // instead of the value hard-coded in index.html.
+  useEffect(() => {
+    if (siteName) document.title = siteName
+  }, [siteName])
+
+  // Pick a default uuid for the Hub sidebar entry. Prefer the first online
+  // node so the cockpit lands on something interesting. Fall back to the
+  // first node, and finally undefined (which disables the sidebar entry).
+  const hubTargetUuid = useMemo(() => {
+    const firstOnline = displayNodes.find((n) => displayRecords[n.uuid]?.online)
+    return firstOnline?.uuid ?? displayNodes[0]?.uuid
+  }, [displayNodes, displayRecords])
+
+  // Route dispatch
+  switch (route.name) {
+    case 'hub': {
+      // Hub needs a uuid; if missing, redirect to the default target via 404.
+      const target = route.uuid ?? hubTargetUuid
+      if (!target) {
+        // No nodes at all — fall through to overview which already handles empty-state nicely.
+        break
+      }
+      return (
+        <ErrorBoundary scope="hub" resetKey={target}>
+          <HubPage
+            uuid={target}
+            nodes={displayNodes}
+            records={displayRecords}
+            theme={theme}
+            onTheme={handleThemeChange}
+            siteName={siteName}
+            lastUpdate={lastUpdate}
+            conn={conn}
+            config={config}
+            ping={ping}
+            hubTargetUuid={hubTargetUuid}
+            pingByNode={pingByNode}
+            pingLossByNode={pingLossByNode}
+          />
+        </ErrorBoundary>
+      )
+    }
+
+    case 'nodes':
+      if (route.uuid) {
+        return (
+          <NodeDetailPage
+            uuid={route.uuid}
+            nodes={displayNodes}
+            records={displayRecords}
+            theme={theme}
+            onTheme={handleThemeChange}
+            siteName={siteName}
+            lastUpdate={lastUpdate}
+            conn={conn}
+            config={config}
+            hubTargetUuid={hubTargetUuid}
+            pingByNode={pingByNode}
+            pingLossByNode={pingLossByNode}
+          />
+        )
+      }
+      return (
+          <ErrorBoundary scope="nodes-v2">
+            <NodesV2Page
+              nodes={displayNodes}
+              records={displayRecords}
+              theme={theme}
+              onTheme={handleThemeChange}
+              siteName={siteName}
+              lastUpdate={lastUpdate}
+              conn={conn}
+              ping={ping}
+              config={config}
+              hubTargetUuid={hubTargetUuid}
+              viewVersion={viewVersion}
+              onViewVersionChange={setViewVersion}
+              pingByNode={pingByNode}
+              pingLossByNode={pingLossByNode}
+            />
+          </ErrorBoundary>
+        )
+
+    case 'traffic':
+      return (
+        <TrafficPage
+          nodes={displayNodes}
+          records={displayRecords}
+          theme={theme}
+          onTheme={handleThemeChange}
+          siteName={siteName}
+          lastUpdate={lastUpdate}
+          conn={conn}
+          history={globalHistory}
+          config={config}
+          hubTargetUuid={hubTargetUuid}
+        />
+      )
+
+    case 'map': {
+      // The geo map now lives in a separate HTML entry (dist/map.html).
+      // If anyone hits #/map directly (legacy bookmark, manual URL, hub deep
+      // link from an older build), bounce them to the standalone page.
+      if (typeof window !== 'undefined') {
+        window.location.replace('./map.html')
+      }
+      return null
+    }
+
+    case 'billing':
+      return (
+        <BillingPage
+          nodes={displayNodes}
+          records={displayRecords}
+          theme={theme}
+          onTheme={handleThemeChange}
+          siteName={siteName}
+          lastUpdate={lastUpdate}
+          conn={conn}
+          config={config}
+          hubTargetUuid={hubTargetUuid}
+        />
+      )
+
+    case 'v2':
+      return (
+        <ErrorBoundary scope="v2-demo">
+          <V2DemoPage
+            nodes={displayNodes}
+            records={displayRecords}
+            theme={theme}
+            onTheme={handleThemeChange}
+            siteName={siteName}
+            lastUpdate={lastUpdate}
+            conn={conn}
+            ping={ping}
+            config={config}
+            hubTargetUuid={hubTargetUuid}
+          />
+        </ErrorBoundary>
+      )
+
+    case 'v2-overview':
+      return (
+        <ErrorBoundary scope="v2-overview">
+          <OverviewV2Page
+            nodes={displayNodes}
+            records={displayRecords}
+            theme={theme}
+            onTheme={handleThemeChange}
+            siteName={siteName}
+            lastUpdate={lastUpdate}
+            conn={conn}
+            ping={ping}
+            config={config}
+            hubTargetUuid={hubTargetUuid}
+            viewVersion="v2"
+            onViewVersionChange={setViewVersion}
+          />
+        </ErrorBoundary>
+      )
+
+    case 'v2-nodes':
+      return (
+        <ErrorBoundary scope="v2-nodes">
+          <NodesV2Page
+            nodes={displayNodes}
+            records={displayRecords}
+            theme={theme}
+            onTheme={handleThemeChange}
+            siteName={siteName}
+            lastUpdate={lastUpdate}
+            conn={conn}
+            ping={ping}
+            config={config}
+            hubTargetUuid={hubTargetUuid}
+            viewVersion="v2"
+            onViewVersionChange={setViewVersion}
+          />
+        </ErrorBoundary>
+      )
+
+    case 'overview':
+    default:
+      return (
+          <ErrorBoundary scope="overview-v2">
+            <OverviewV2Page
+              nodes={displayNodes}
+              records={displayRecords}
+              theme={theme}
+              onTheme={handleThemeChange}
+              siteName={siteName}
+              lastUpdate={lastUpdate}
+              conn={conn}
+              ping={ping}
+              config={config}
+              hubTargetUuid={hubTargetUuid}
+              viewVersion={viewVersion}
+              onViewVersionChange={setViewVersion}
+            />
+          </ErrorBoundary>
+        )
+  }
+
+  // Fallback (e.g. hub with no target and no nodes)
+  return (
+      <ErrorBoundary scope="overview-v2-fallback">
+        <OverviewV2Page
+          nodes={displayNodes}
+          records={displayRecords}
+          theme={theme}
+          onTheme={handleThemeChange}
+          siteName={siteName}
+          lastUpdate={lastUpdate}
+          conn={conn}
+          ping={ping}
+          config={config}
+          hubTargetUuid={hubTargetUuid}
+          viewVersion={viewVersion}
+          onViewVersionChange={setViewVersion}
+        />
+      </ErrorBoundary>
+    )
+}

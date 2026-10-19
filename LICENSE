@@ -1,0 +1,260 @@
+# Miaomiaowu X Source Available License v1.0 (MSAL-1.0)
+
+Copyright (c) 2026 Jim Lee
+
+All rights reserved.
+
+---
+
+# 1. Definitions
+
+For the purposes of this License:
+
+* **Software** means the Miaomiaowu X project and all associated source code, documentation, configuration files, scripts, assets, and related materials.
+* **Copyright Holder** means the original author of the Software.
+* **Modified Version** means any version of the Software that has been altered from the original source.
+* **Commercial Use** means any activity intended for commercial advantage or monetary compensation, whether direct or indirect.
+
+---
+
+# 2. Grant of Rights
+
+Subject to the terms of this License, you are granted a worldwide, non-exclusive, non-transferable, revocable license to:
+
+* Use the Software for personal, educational, research, evaluation, and other **non-commercial** purposes.
+* Study and audit the source code.
+* Modify the source code.
+* Fork this repository.
+* Build and run your own modified versions.
+* Share original or modified source code under this License.
+* Submit Pull Requests and contribute improvements.
+
+No ownership of the Software is transferred.
+
+---
+
+# 3. Copyleft Requirement
+
+If you distribute or publish a Modified Version, you **must**:
+
+* Release the complete corresponding source code.
+* Include all files required to build the software.
+* License the Modified Version under this License.
+* Preserve all copyright notices.
+* Clearly document all modifications.
+
+Modified versions **may not** be distributed in closed-source form.
+
+---
+
+# 4. Network Use
+
+If you modify the Software and make it available over a network, including but not limited to:
+
+* SaaS
+* Cloud Service
+* Control Panel
+* API Service
+* Proxy Platform
+* VPN Platform
+* Node Management Platform
+
+you must also make the complete corresponding source code of the running version publicly available.
+
+---
+
+# 5. Non-Commercial Restriction
+
+Without prior written authorization from the Copyright Holder, you may **NOT**:
+
+* Sell the Software.
+* Sell licenses for the Software.
+* Charge users for using the Software.
+* Bundle the Software into paid products.
+* Provide paid deployment services based primarily on the Software.
+* Operate paid hosting or SaaS services based on the Software.
+* Provide commercial VPN, Proxy, Gateway, or Node Management services based on the Software.
+* Integrate the Software into commercial products.
+* Use the Software for any commercial advantage.
+
+Organizations wishing to use the Software commercially must obtain a separate Commercial License.
+
+---
+
+# 6. License Integrity
+
+You may **NOT**:
+
+* Remove, disable, bypass, patch, replace, emulate, forge, intercept, or otherwise interfere with any licensing, activation, subscription, verification, feature entitlement, authorization, or access control mechanism implemented by the Software.
+* Create, distribute, or use any software, script, patch, or tool primarily intended to circumvent the Software's licensing mechanisms.
+* Remove or modify copyright notices.
+* Remove attribution.
+* Misrepresent Modified Versions as official releases.
+
+---
+
+# 7. Anti-Competition
+
+The Software is published to encourage learning, transparency, and community contribution.
+
+It is **NOT** intended to permit the creation of competing commercial products or services.
+
+Without prior written authorization from the Copyright Holder, you may **NOT**:
+
+* Develop, market, or operate a commercial product substantially based on the Software.
+* Use the Software as the primary foundation of a competing proxy management platform.
+* Rebrand and commercialize the Software.
+* Operate a competing SaaS or hosting platform based on the Software.
+* Represent a Modified Version as an official successor or replacement of Miaomiaowu X.
+
+This restriction applies regardless of whether the Software has been modified.
+
+This section does **NOT** prohibit:
+
+* Personal use.
+* Internal organizational use.
+* Educational activities.
+* Security research.
+* Code auditing.
+* Plugins.
+* Themes.
+* Extensions.
+* Integrations using documented public APIs.
+* Independent software interoperating through standard protocols.
+
+---
+
+# 8. Trademark and Branding
+
+The following are exclusive intellectual property of the Copyright Holder:
+
+* Miaomiaowu
+* 妙妙屋
+* Miaomiaowu X
+* 妙妙屋 X
+* Logos
+* Icons
+* Artwork
+* Domain names
+* Official website assets
+* Branding materials
+* Visual identity
+
+This License grants **NO trademark rights**.
+
+Modified Versions **must NOT**:
+
+* Use the official project name.
+* Use the official logo.
+* Use the official branding.
+* Imply endorsement by the Copyright Holder.
+* Imply official status.
+
+Modified Versions **must**:
+
+* Use a different project name.
+* Replace all logos and branding.
+* Clearly indicate they are unofficial forks.
+* Preserve copyright notices.
+
+---
+
+# 9. Redistribution
+
+Redistributions of the original Software or Modified Versions must:
+
+* Include this License.
+* Preserve copyright notices.
+* Clearly indicate modifications.
+* Credit the original project.
+
+---
+
+# 10. Contributions
+
+Unless explicitly agreed otherwise:
+
+* Contributions are licensed under this License.
+* The Copyright Holder retains the right to relicense contributed code under other licensing terms.
+
+---
+
+# 11. Commercial Licensing
+
+The Copyright Holder may grant Commercial Licenses.
+
+Commercial license holders may receive rights beyond those granted under this License.
+
+Nothing in this License limits the Copyright Holder's right to distribute the Software under different licensing terms.
+
+---
+
+# 12. Termination
+
+Violation of this License immediately terminates all rights granted herein.
+
+Upon termination you must immediately cease:
+
+* Using the Software.
+* Modifying the Software.
+* Distributing the Software.
+* Operating services based on the Software.
+
+Rights may only be restored through written permission from the Copyright Holder.
+
+---
+
+# 13. Warranty Disclaimer
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, OR NON-INFRINGEMENT.
+
+IN NO EVENT SHALL THE COPYRIGHT HOLDER BE LIABLE FOR ANY CLAIM, DAMAGES, OR OTHER LIABILITY ARISING FROM THE USE OF THE SOFTWARE.
+
+---
+
+# Summary (Non-Normative)
+
+| Action                        | Allowed |
+| ----------------------------- | :-----: |
+| View source                   |    ✅    |
+| Learn from source             |    ✅    |
+| Fork                          |    ✅    |
+| Modify                        |    ✅    |
+| Submit Pull Requests          |    ✅    |
+| Personal use                  |    ✅    |
+| Educational use               |    ✅    |
+| Internal organizational use   |    ✅    |
+| Non-commercial deployment     |    ✅    |
+| Redistribute source           |    ✅    |
+| Closed-source modifications   |    ❌    |
+| Commercial use                |    ❌    |
+| Selling the Software          |    ❌    |
+| Paid SaaS / Hosting           |    ❌    |
+| Commercial proxy platform     |    ❌    |
+| Competing commercial products |    ❌    |
+| Removing license verification |    ❌    |
+| Cracking authorization        |    ❌    |
+| Removing copyright notices    |    ❌    |
+| Using official trademarks     |    ❌    |
+
+---
+
+# Commercial License
+
+Commercial use requires prior written authorization.
+
+For commercial licensing inquiries, please contact:
+
+**Email:** [your@email.com](mailto:your@email.com)
+
+---
+
+# Notice
+
+This License is **NOT** an OSI-approved Open Source License.
+
+Miaomiaowu X is **Source Available Software**.
+
+The source code is publicly available for transparency, learning, auditing, and community contribution.
+
+Commercial use is prohibited unless separately licensed by the Copyright Holder.

@@ -1,0 +1,18 @@
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "mmwx-probe",
+  "main": "worker/index.ts",
+  "compatibility_date": "2026-07-31",
+  "keep_vars": true,
+  "workers_dev": true,
+  // 绑定自己的域名(可选):
+  // "routes": [{ "pattern": "status.example.com", "custom_domain": true }],
+  // 全站默认主题(可选): 先执行 npx wrangler kv namespace create THEME_KV, 把输出的 id 填进来再取消注释
+  // "kv_namespaces": [{ "binding": "THEME_KV", "id": "<KV id>" }],
+  "assets": {
+    "directory": "./dist",
+    "binding": "ASSETS",
+    "not_found_handling": "single-page-application",
+    "run_worker_first": true
+  }
+}

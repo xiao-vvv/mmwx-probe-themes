@@ -1,0 +1,478 @@
+/* biome-ignore-all lint/complexity/noImportantStyles: scoped skin overrides upstream utility classes. */
+
+html.mmwx-beauty.light {
+	--beauty-surface: rgba(255, 255, 255, 0.5);
+	--beauty-surface-strong: rgba(255, 255, 255, 0.7);
+	--beauty-border: rgba(255, 255, 255, 0.7);
+	--beauty-text: #172033;
+	--beauty-muted: #536174;
+	--beauty-accent: #237967;
+	--beauty-track: rgba(56, 72, 87, 0.15);
+	--beauty-shadow: rgba(32, 49, 64, 0.16);
+}
+
+html.mmwx-beauty.dark {
+	--beauty-surface: rgba(15, 23, 31, 0.5);
+	--beauty-surface-strong: rgba(15, 23, 31, 0.72);
+	--beauty-border: rgba(222, 234, 239, 0.16);
+	--beauty-text: #f2f6f4;
+	--beauty-muted: #b4c0c8;
+	--beauty-accent: #73d3b7;
+	--beauty-track: rgba(222, 234, 239, 0.16);
+	--beauty-shadow: rgba(2, 8, 12, 0.42);
+}
+
+html.mmwx-beauty,
+html.mmwx-beauty body,
+html.mmwx-beauty button,
+html.mmwx-beauty input,
+html.mmwx-beauty select,
+html.mmwx-beauty textarea {
+	font-family:
+		"Google Sans", "BC Tsukushi SMaru", "Tsukushi A Round Gothic",
+		"TsukuARdGothic-Regular", "筑紫A丸ゴシック", "Yuanti SC", "YuanTi SC",
+		"PingFang SC", system-ui, "Microsoft YaHei", sans-serif;
+	letter-spacing: 0;
+}
+
+html.mmwx-beauty body {
+	background: transparent !important;
+	color: var(--beauty-text);
+	font-weight: 500;
+}
+
+html.mmwx-beauty .fixed.inset-0.bg-cover {
+	background-position: center top !important;
+	background-attachment: fixed;
+}
+
+html.mmwx-beauty .fixed.inset-0.bg-cover::after {
+	position: absolute;
+	inset: 0;
+	content: "";
+	pointer-events: none;
+}
+
+html.mmwx-beauty.light .fixed.inset-0.bg-cover::after {
+	background: rgba(245, 250, 247, 0.08);
+}
+
+html.mmwx-beauty.dark .fixed.inset-0.bg-cover {
+	filter: brightness(0.58) saturate(0.76) !important;
+}
+
+html.mmwx-beauty.dark .fixed.inset-0.bg-cover::after {
+	background: rgba(5, 10, 14, 0.3);
+}
+
+html.mmwx-beauty [class*="bg-card"],
+html.mmwx-beauty .text-card-foreground {
+	border-color: var(--beauty-border) !important;
+	background: var(--beauty-surface) !important;
+	box-shadow: 0 10px 28px var(--beauty-shadow) !important;
+	color: var(--beauty-text) !important;
+	backdrop-filter: blur(6px) saturate(1.08);
+	-webkit-backdrop-filter: blur(6px) saturate(1.08);
+}
+
+html.mmwx-beauty .rounded-lg.text-card-foreground,
+html.mmwx-beauty [class*="bg-card"].rounded-lg {
+	border: 1px solid var(--beauty-border) !important;
+	border-radius: 14px !important;
+}
+
+/* ===== 黑金地球 → 玫瑰粉金(逐类重配色, 比色相旋转精准可控) ===== */
+html.mmwx-beauty .premium-probe-globe-stage {
+	--pp-gold: #ef9ec7;
+}
+
+html.mmwx-beauty .premium-probe-globe-stage > span {
+	color: #b98da3;
+}
+
+html.mmwx-beauty .premium-probe-orbits ellipse {
+	stroke: rgba(238, 142, 190, 0.7);
+}
+
+html.mmwx-beauty .premium-probe-globe-glow {
+	fill: rgba(238, 142, 190, 0.34);
+}
+
+html.mmwx-beauty .premium-probe-graticule {
+	stroke: rgba(238, 142, 190, 0.16);
+}
+
+html.mmwx-beauty [data-premium-probe-country] {
+	fill: #1a1218;
+	stroke: rgba(238, 142, 190, 0.45);
+}
+
+html.mmwx-beauty [data-premium-probe-country].is-active {
+	fill: #4a2038;
+	stroke: #f7c6de;
+	filter: drop-shadow(0 0 4px rgba(238, 142, 190, 0.72));
+}
+
+html.mmwx-beauty .premium-probe-globe-outline {
+	stroke: #e884b6;
+	filter: drop-shadow(0 0 5px rgba(238, 142, 190, 0.72));
+}
+
+html.mmwx-beauty .premium-probe-node-connections path {
+	stroke: rgba(244, 158, 203, 0.7);
+}
+
+html.mmwx-beauty .premium-probe-node-connections circle {
+	fill: #ffe1ef;
+	stroke: #d1568f;
+	filter: drop-shadow(0 0 5px #f29fc6);
+}
+
+html.mmwx-beauty .premium-probe-orbit-labels line {
+	stroke: rgba(238, 142, 190, 0.78);
+}
+
+html.mmwx-beauty .premium-probe-orbit-labels circle {
+	fill: #ef9ec7;
+	stroke: #ffe3f0;
+	filter: drop-shadow(0 0 4px #ef9ec7);
+}
+
+html.mmwx-beauty .premium-probe-orbit-labels rect {
+	fill: rgba(26, 10, 19, 0.94);
+	stroke: rgba(238, 142, 190, 0.48);
+}
+
+html.mmwx-beauty .premium-probe-orbit-label-content {
+	color: #f8e6ef;
+}
+
+html.mmwx-beauty .premium-probe-orbit-label-count {
+	border-color: rgba(247, 198, 222, 0.62);
+	background: rgba(238, 142, 190, 0.16);
+	color: #f7c6de;
+}
+
+/* ===== 卡片悬停微交互: 轻浮起+阴影加深+边框提亮(纯合成器动画零负担) ===== */
+html.mmwx-beauty [class*="bg-card"],
+html.mmwx-beauty .text-card-foreground {
+	transition:
+		transform 150ms ease,
+		box-shadow 150ms ease,
+		border-color 150ms ease;
+}
+
+@media (hover: hover) {
+	html.mmwx-beauty [class*="bg-card"]:hover,
+	html.mmwx-beauty .text-card-foreground:hover {
+		box-shadow: 0 14px 34px var(--beauty-shadow) !important;
+		transform: translateY(-2px);
+	}
+
+	html.mmwx-beauty.light [class*="bg-card"]:hover {
+		border-color: rgba(255, 255, 255, 0.95) !important;
+	}
+
+	html.mmwx-beauty.dark [class*="bg-card"]:hover {
+		border-color: rgba(240, 170, 205, 0.35) !important;
+	}
+}
+
+/* ===== CPU/内存/存储用量条: 常态粉渐变, 70/90 阈值保留橙/红告警(同系调和) ===== */
+html.mmwx-beauty [role="progressbar"] [class*="bg-green-5"] {
+	background: linear-gradient(90deg, #f2a3c9, #e0679f) !important;
+}
+
+html.mmwx-beauty [role="progressbar"] [class*="bg-orange-4"] {
+	background: linear-gradient(90deg, #f7b26f, #ef8f4b) !important;
+}
+
+html.mmwx-beauty [role="progressbar"] [class*="bg-red-5"] {
+	background: linear-gradient(90deg, #f2789a, #e04565) !important;
+}
+
+/* ===== 地图/服务开关小圆钮: 默认蓝改玫瑰玻璃, 选中态粉渐变。
+   注意: tailwind-merge 会吞掉按钮的 bg-blue-100 类, 不能按背景类匹配,
+   改按结构(section 直属 button)+状态(选中态经合并后带 text-white)。 ===== */
+html.mmwx-beauty .server-overview-controls section > button {
+	background: var(--beauty-surface-strong) !important;
+	color: #c23a80 !important;
+}
+
+html.mmwx-beauty.dark .server-overview-controls section > button {
+	color: #f5a8ce !important;
+}
+
+html.mmwx-beauty.light .server-overview-controls section > button[class*="text-white"],
+html.mmwx-beauty.dark .server-overview-controls section > button[class*="text-white"] {
+	background: linear-gradient(135deg, #ef87ba, #dd5695) !important;
+	color: #fff !important;
+}
+
+/* ===== 概览"网络"卡的蓝/紫数字与"总数"卡蓝点 → 玫瑰/薰衣草 ===== */
+html.mmwx-beauty .server-overview [class*="text-blue-8"] {
+	color: #c23a80 !important;
+}
+
+html.mmwx-beauty.dark .server-overview [class*="text-blue-8"] {
+	color: #f5a8ce !important;
+}
+
+html.mmwx-beauty .server-overview [class*="text-purple-8"] {
+	color: #9678e6 !important;
+}
+
+html.mmwx-beauty.dark .server-overview [class*="text-purple-8"] {
+	color: #cdbcf7 !important;
+}
+
+html.mmwx-beauty .server-overview span[class*="bg-blue-5"] {
+	background: #e0679f !important;
+}
+
+/* 上游 bg-secondary(上传胶囊 Badge、迷你进度条轨道)是不透明实色 #F5F5F4,
+   在半透明卡面上像一块贴纸; 「上传/下载」胶囊统一为暖玫瑰薄底(灰底在粉调里太沉) */
+/* 「> .bg-secondary」写法专为压过后文全局 .bg-secondary 灰轨道规则(上传Badge带此类) */
+html.mmwx-beauty .server-transfer-summary > *,
+html.mmwx-beauty .server-transfer-summary > .bg-secondary {
+	border-color: rgba(224, 103, 159, 0.22) !important;
+	background: rgba(224, 103, 159, 0.1) !important;
+	box-shadow: none !important;
+	color: var(--beauty-text) !important;
+}
+
+html.mmwx-beauty.dark .server-transfer-summary > *,
+html.mmwx-beauty.dark .server-transfer-summary > .bg-secondary {
+	border-color: rgba(240, 140, 190, 0.26) !important;
+	background: rgba(240, 140, 190, 0.13) !important;
+}
+
+html.mmwx-beauty .bg-secondary {
+	background-color: var(--beauty-track) !important;
+}
+
+html.mmwx-beauty [class*="bg-card"] .text-muted-foreground,
+html.mmwx-beauty .text-card-foreground .text-muted-foreground,
+html.mmwx-beauty .header-timer .opacity-40,
+html.mmwx-beauty .header-timer .opacity-50 {
+	color: var(--beauty-muted) !important;
+	opacity: 1 !important;
+}
+
+html.mmwx-beauty .header-timer {
+	color: var(--beauty-text);
+	text-shadow: 0 1px 12px rgba(255, 255, 255, 0.8);
+}
+
+html.mmwx-beauty.dark .header-timer {
+	text-shadow: 0 1px 14px rgba(0, 0, 0, 0.75);
+}
+
+html.mmwx-beauty .header-handles button,
+html.mmwx-beauty .server-overview-controls > div {
+	border-color: var(--beauty-border) !important;
+	background: var(--beauty-surface-strong) !important;
+	box-shadow: 0 6px 20px var(--beauty-shadow);
+	color: var(--beauty-text) !important;
+	backdrop-filter: blur(6px);
+	-webkit-backdrop-filter: blur(6px);
+}
+
+html.mmwx-beauty .header-handles button {
+	border-radius: 999px !important;
+}
+
+html.mmwx-beauty .server-overview-controls button {
+	box-shadow: 0 5px 15px var(--beauty-shadow);
+}
+
+html.mmwx-beauty .server-footer-name,
+html.mmwx-beauty .server-footer-name p,
+html.mmwx-beauty .server-footer-name a {
+	color: var(--beauty-muted) !important;
+	opacity: 1;
+}
+
+html.mmwx-beauty .mmwx-beauty-quota {
+	display: flex;
+	width: 100%;
+	min-width: 0;
+	flex-direction: column;
+	gap: 5px;
+	margin-top: 2px;
+}
+
+html.mmwx-beauty .mmwx-beauty-quota-copy {
+	display: flex;
+	min-width: 0;
+	align-items: center;
+	justify-content: space-between;
+	gap: 8px;
+	color: var(--beauty-text);
+	font-size: 10.5px;
+	font-variant-numeric: tabular-nums;
+	line-height: 1.3;
+}
+
+html.mmwx-beauty .mmwx-beauty-quota-copy > span {
+	min-width: 0;
+	overflow-wrap: anywhere;
+}
+
+html.mmwx-beauty .mmwx-beauty-quota-meta {
+	color: var(--beauty-muted);
+	text-align: right;
+}
+
+html.mmwx-beauty .mmwx-beauty-quota-track {
+	position: relative;
+	height: 5px;
+	overflow: hidden;
+	border-radius: 999px;
+	background: var(--beauty-track);
+}
+
+html.mmwx-beauty .mmwx-beauty-quota-track > span {
+	display: block;
+	height: 100%;
+	min-width: 2px;
+	border-radius: inherit;
+	background: var(--beauty-accent);
+	transition: width 180ms ease;
+}
+
+html.mmwx-beauty .mmwx-beauty-visitor {
+	position: fixed;
+	bottom: 16px;
+	left: 16px;
+	z-index: 50;
+	display: grid;
+	max-width: min(440px, calc(100vw - 104px));
+	grid-template-columns: auto minmax(0, 1fr) auto;
+	align-items: center;
+	gap: 9px;
+	padding: 9px 9px 9px 12px;
+	border: 1px solid var(--beauty-border);
+	border-radius: 8px;
+	background: var(--beauty-surface-strong);
+	box-shadow: 0 10px 28px var(--beauty-shadow);
+	color: var(--beauty-muted);
+	backdrop-filter: blur(14px) saturate(1.08);
+	-webkit-backdrop-filter: blur(14px) saturate(1.08);
+}
+
+html.mmwx-beauty .mmwx-beauty-visitor > svg {
+	color: var(--beauty-accent);
+}
+
+html.mmwx-beauty .mmwx-beauty-visitor-copy {
+	display: flex;
+	min-width: 0;
+	align-items: center;
+	gap: 7px;
+	font-size: 11px;
+	line-height: 1.35;
+	white-space: nowrap;
+}
+
+html.mmwx-beauty .mmwx-beauty-visitor-copy > span {
+	min-width: 0;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+html.mmwx-beauty .mmwx-beauty-visitor-ip {
+	color: var(--beauty-text);
+	font-weight: 600;
+	font-variant-numeric: tabular-nums;
+}
+
+html.mmwx-beauty .mmwx-beauty-visitor-location {
+	max-width: 130px;
+}
+
+html.mmwx-beauty .mmwx-beauty-visitor-isp {
+	max-width: 160px;
+}
+
+html.mmwx-beauty .mmwx-beauty-visitor button {
+	display: inline-flex;
+	width: 24px;
+	height: 24px;
+	align-items: center;
+	justify-content: center;
+	padding: 0;
+	border: 0;
+	border-radius: 50%;
+	background: rgba(70, 84, 94, 0.1);
+	color: var(--beauty-muted);
+	transition:
+		background 120ms ease,
+		color 120ms ease;
+}
+
+html.mmwx-beauty .mmwx-beauty-visitor button:hover {
+	background: rgba(70, 84, 94, 0.2);
+	color: var(--beauty-text);
+}
+
+@media (max-width: 639px) {
+	html.mmwx-beauty .fixed.inset-0.bg-cover {
+		background-position: 68% top !important;
+		background-attachment: scroll;
+	}
+
+	/* 手机上不显示「上传/下载」累计量胶囊, 省出卡面空间 */
+	html.mmwx-beauty .server-transfer-summary {
+		display: none !important;
+	}
+
+	html.mmwx-beauty [class*="bg-card"],
+	html.mmwx-beauty .text-card-foreground {
+		min-width: 0;
+		backdrop-filter: blur(6px) saturate(1.05);
+		-webkit-backdrop-filter: blur(6px) saturate(1.05);
+	}
+
+	html.mmwx-beauty .server-inline-list [class*="bg-card"],
+	html.mmwx-beauty .server-inline-list .text-card-foreground {
+		min-width: 900px;
+	}
+
+	html.mmwx-beauty .mmwx-beauty-quota-copy {
+		align-items: flex-start;
+		flex-direction: column;
+		gap: 2px;
+	}
+
+	html.mmwx-beauty .mmwx-beauty-quota-meta {
+		text-align: left;
+	}
+
+	html.mmwx-beauty .mmwx-beauty-visitor {
+		position: static;
+		width: 100%;
+		max-width: none;
+	}
+
+	html.mmwx-beauty .mmwx-beauty-visitor-copy {
+		align-items: flex-start;
+		flex-direction: column;
+		gap: 1px;
+		white-space: normal;
+	}
+
+	html.mmwx-beauty .mmwx-beauty-visitor-location {
+		max-width: 100%;
+	}
+
+	html.mmwx-beauty .mmwx-beauty-visitor-isp {
+		display: none;
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	html.mmwx-beauty .mmwx-beauty-quota-track > span {
+		transition: none;
+	}
+}

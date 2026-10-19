@@ -1,0 +1,2 @@
+# 私有许可证勋章: commit 时自动剥离(clean), 本地工作区保留
+src/license-badges.ts filter=license-strip

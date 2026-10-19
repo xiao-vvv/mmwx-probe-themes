@@ -1,0 +1,56 @@
+{
+  "name": "mmwx-probe",
+  "private": true,
+  "workspaces": [
+    "themes/nezha-dash"
+  ],
+  "version": "0.1.0",
+  "description": "Standalone Cloudflare Worker probe frontend for MiaoMiaoWuX",
+  "cloudflare": {
+    "bindings": {
+      "MMWX_ORIGIN": {
+        "description": "妙妙屋 X 主控的公网 HTTPS 地址，例如 `https://panel.example.com`。"
+      },
+      "PROBE_TOKEN": {
+        "description": "在主控的 **系统设置 → 探针** 中生成的独立探针访问密钥。"
+      }
+    }
+  },
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "npm run build:app && npm run build:nezha-dash",
+    "build:app": "tsc -b && vite build",
+    "build:nezha-dash": "npm run build --workspace themes/nezha-dash",
+    "preview": "vite preview",
+    "deploy": "./scripts/deploy.sh",
+    "typecheck": "tsc --noEmit && npm run typecheck --workspace themes/nezha-dash",
+    "test:nezha-dash": "npm run test --workspace themes/nezha-dash"
+  },
+  "dependencies": {
+    "@types/d3-geo": "^3.1.1",
+    "@types/topojson-client": "^3.1.5",
+    "@vitejs/plugin-react-swc": "^4.1.0",
+    "d3-geo": "^3.1.1",
+    "i18n-iso-countries": "^7.14.0",
+    "lottie-react": "^2.4.1",
+    "lucide-react": "^0.545.0",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0",
+    "recharts": "^3.2.1",
+    "simple-icons": "^16.28.0",
+    "topojson-client": "^3.1.0",
+    "twemoji": "^14.0.2",
+    "vite": "^7.1.9",
+    "world-atlas": "^2.0.2"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^5.20260731.1",
+    "@types/node": "^26.2.0",
+    "@types/react": "^19.2.0",
+    "@types/react-dom": "^19.2.0",
+    "@types/twemoji": "^13.1.1",
+    "typescript": "~5.9.3",
+    "wrangler": "^4.119.0"
+  }
+}

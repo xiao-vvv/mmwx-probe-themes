@@ -1,0 +1,43 @@
+{
+	"nezha": "Monitor Nezha",
+	"overview": "Ringkasan",
+	"dashboard": "Dasbor",
+	"login": "Masuk",
+	"online": "Online",
+	"offline": "Offline",
+	"whereTheTimeIs": "Dimana waktunya",
+	"refreshing": "Menyegarkan",
+	"info": {
+		"websocketConnecting": "WebSocket menghubungkan",
+		"processing": "Memproses...",
+		"websocketDisconnected": "WebSocket terputus",
+		"websocketConnected": "WebSocket terhubung"
+	},
+	"serverOverview": {
+		"totalServers": "Jumlah Server",
+		"onlineServers": "Online Server",
+		"offlineServers": "Offline Server",
+		"speed": "Kecepatan",
+		"totalBandwidth": "Jumlah Bandwidth"
+	},
+	"theme": {
+		"light": "Terang",
+		"dark": "Gelap"
+	},
+	"sort": {
+		"label": "Urutkan",
+		"types": {
+			"default": "Bawaan",
+			"name": "Nama",
+			"uptime": "Waktu aktif",
+			"system": "Sistem",
+			"cpu": "CPU",
+			"mem": "Memori",
+			"disk": "Disk",
+			"up": "Upload",
+			"down": "Download",
+			"up_total": "Total upload",
+			"down_total": "Total download"
+		}
+	}
+}
