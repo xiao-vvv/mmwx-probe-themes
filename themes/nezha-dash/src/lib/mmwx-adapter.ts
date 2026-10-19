@@ -1,3 +1,4 @@
+import { PLAN_TAG_RULES, type PlanTagRule } from "@/plan-tags.config";
 import type {
 	CycleTransferStats,
 	MetricType,
@@ -9,7 +10,6 @@ import type {
 	ServiceData,
 	ServiceResponse,
 } from "@/types/nezha-api";
-import { PLAN_TAG_RULES, type PlanTagRule } from "@/plan-tags.config";
 
 export interface MmwxProbeBucket {
 	ms: number;
@@ -248,18 +248,24 @@ function trafficUsedBytes(server: MmwxProbeServer): number {
 
 /* 线路/带宽/IPv6 标签: 规则在 src/plan-tags.config.ts。networkRoute 用逗号分隔,
    PlanInfo 会在单个标签内以全角竖线相连。 */
+// 规则若带 g/y 标志, test() 会记住上次位置; 每次从头匹配
+function regexMatches(regex: RegExp, text: string): boolean {
+	regex.lastIndex = 0;
+	return regex.test(text);
+}
+
 function matchedPlanRules(server: MmwxProbeServer): PlanTagRule[] {
 	const name = (server.name || "").toLowerCase();
 	const provider = (server.provider_name || "").toLowerCase();
 	const country = (server.region_country || "").trim().toUpperCase();
 	const anyIn = (hay: string, keys?: string[]) =>
-		!keys || keys.some((k) => hay.includes(k.toLowerCase()));
+		!keys?.length || keys.some((k) => hay.includes(k.toLowerCase()));
 	return PLAN_TAG_RULES.filter(
 		(rule) =>
 			anyIn(name, rule.nameIncludes) &&
 			anyIn(provider, rule.providerIncludes) &&
-			(!rule.nameRegex || rule.nameRegex.test(server.name || "")) &&
-			(!rule.country ||
+			(!rule.nameRegex || regexMatches(rule.nameRegex, server.name || "")) &&
+			(!rule.country?.length ||
 				rule.country.some((c) => c.toUpperCase() === country)),
 	);
 }
@@ -267,22 +273,17 @@ function matchedPlanRules(server: MmwxProbeServer): PlanTagRule[] {
 function planLineTags(server: MmwxProbeServer): {
 	bandwidth: string;
 	networkRoute: string;
+	ipv6: boolean;
 } {
 	let bandwidth = "";
 	let networkRoute = "";
+	let ipv6 = true;
 	for (const rule of matchedPlanRules(server)) {
 		if (rule.bandwidth !== undefined) bandwidth = rule.bandwidth;
 		if (rule.networkRoute !== undefined) networkRoute = rule.networkRoute;
-	}
-	return { bandwidth, networkRoute };
-}
-
-function hasIPv6(server: MmwxProbeServer): boolean {
-	let ipv6 = true;
-	for (const rule of matchedPlanRules(server)) {
 		if (rule.ipv6 !== undefined) ipv6 = rule.ipv6;
 	}
-	return ipv6;
+	return { bandwidth, networkRoute, ipv6 };
 }
 
 function publicNote(server: MmwxProbeServer): string {
@@ -296,15 +297,15 @@ function publicNote(server: MmwxProbeServer): string {
 				amount: renewalAmount(server),
 			}
 		: undefined;
-	const { bandwidth, networkRoute } = planLineTags(server);
-	// IPv4 全员; IPv6 只标真有 v6 的机器; 无流量上限的机器标"无限流量"
+	const { bandwidth, networkRoute, ipv6 } = planLineTags(server);
+	// IPv4 全员; IPv6 默认显示, 可由 plan-tags 规则关闭; 无流量上限的机器标"无限流量"
 	const planDataMod = {
 		bandwidth,
 		trafficVol:
 			trafficLimitBytes > 0 ? formatQuota(trafficLimitBytes) : "无限流量",
 		trafficType: "",
 		IPv4: "1",
-		IPv6: hasIPv6(server) ? "1" : "",
+		IPv6: ipv6 ? "1" : "",
 		networkRoute,
 		extra: "",
 		trafficUsedBytes: trafficUsedBytes(server),

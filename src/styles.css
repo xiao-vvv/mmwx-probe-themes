@@ -3383,7 +3383,7 @@ footer a:hover {
 :root.theme-lumina.gold .meter i {
   background: linear-gradient(90deg, #8f651d, #e5c367);
 }
-/* 白金: 进度条统一主控白金风格(照 mmwx.289599.top theme-premium light 实测:
+/* 白金: 进度条统一主控白金风格(照主控 theme-premium light 实测:
    4px 细条 + 金2色渐变填充 + 金辉光 0 0 9px -2px #a87c22 + 胶囊圆角 + 暗金轨道浅底可见) */
 :root.theme-lumina.platinum .lumina-meter {
   height: 4px;

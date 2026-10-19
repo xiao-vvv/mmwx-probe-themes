@@ -201,33 +201,3 @@ export function hasRegionEmoji(text: string): boolean {
   return regionEmojiRegex.test(text)
 }
 
-/**
- * 从 ipinfo.io 获取 IP 地理位置信息
- */
-export interface GeoIPInfo {
-  ip: string
-  country_code: string
-  country: string
-  continent_code?: string
-  continent?: string
-  asn?: string
-  as_name?: string
-  as_domain?: string
-}
-
-const IPINFO_TOKEN = 'cddae164b36656'
-
-export async function getGeoIPInfo(ip: string): Promise<GeoIPInfo> {
-  // 去除 IPv6 地址的方括号（如 [2a03:4000:6:d221::1] -> 2a03:4000:6:d221::1）
-  const cleanIp = ip.replace(/^\[|\]$/g, '')
-
-  const response = await fetch(
-    `https://api.ipinfo.io/lite/${cleanIp}?token=${IPINFO_TOKEN}`
-  )
-
-  if (!response.ok) {
-    throw new Error(`Failed to get GeoIP info: ${response.status}`)
-  }
-
-  return response.json()
-}

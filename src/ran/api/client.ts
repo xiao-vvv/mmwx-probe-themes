@@ -1,7 +1,5 @@
 import type { KomariMe, KomariNode, KomariPublicConfig, KomariWSPayload } from '@/types/komari'
 
-const BOUND_PREVIEW_ORIGIN = 'https://5d7d439f-mmwx-probe.eutopiazen.workers.dev'
-
 /**
  * Resolve API base — defaults to current origin (theme served by Komari).
  * In dev (vite), VITE_KOMARI_BASE can override to point at a real Komari host.
@@ -10,10 +8,6 @@ export function apiBase(): string {
   const env = (import.meta as { env?: Record<string, string> }).env?.VITE_KOMARI_BASE
   if (env) return env.replace(/\/+$/, '')
   if (typeof window !== 'undefined') {
-    const host = window.location.hostname
-    if (host.endsWith('.workers.dev') && host.includes('-mmwx-probe.')) {
-      return BOUND_PREVIEW_ORIGIN
-    }
     return window.location.origin
   }
   return ''
@@ -34,7 +28,7 @@ export function wsUrl(path: string): string {
 /** Komari wraps responses in {status, message, data}. Unwrap if present. */
 async function getJson<T>(path: string): Promise<T> {
   const res = await fetch(`${apiBase()}${path}`, {
-    credentials: apiBase() === BOUND_PREVIEW_ORIGIN ? 'omit' : 'include',
+    credentials: 'include',
     headers: { Accept: 'application/json' },
   })
   if (!res.ok) throw new Error(`${path}: HTTP ${res.status}`)

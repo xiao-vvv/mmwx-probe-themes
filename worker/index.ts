@@ -75,9 +75,6 @@ async function serveAsset(request: Request, env: Env, incoming: URL): Promise<Re
 export default {
   async fetch(request: Request, env: Env): Promise<Response> {
     const incoming = new URL(request.url)
-    if (incoming.pathname === '/login') {
-      return Response.redirect(new URL('/login', env.MMWX_ORIGIN).toString(), 302)
-    }
 
     // 全站默认主题(KV): GET 公开读; POST 需 X-Theme-Admin-Key 匹配(站长切主题时自动同步)
     if (incoming.pathname === '/api/default-theme') {
@@ -144,6 +141,9 @@ export default {
       )
     }
 
+    if (routes[incoming.pathname] && !env.MMWX_ORIGIN) {
+      return new Response('MMWX_ORIGIN is not configured', { status: 503 })
+    }
     const target = upstreamURL(request, env)
     if (!target) return serveAsset(request, env, incoming)
     if (request.method !== 'GET') return new Response('Method not allowed', { status: 405 })

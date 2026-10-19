@@ -33,22 +33,18 @@ cd mmwx-probe-themes
 npm ci
 npx wrangler login
 
-npx wrangler secret put PROBE_TOKEN      # 粘贴主控生成的探针密钥
+npx wrangler secret put MMWX_ORIGIN      # 主控 HTTPS 地址，如 https://panel.example.com（不带路径和结尾斜杠）
+npx wrangler secret put PROBE_TOKEN      # 主控生成的探针密钥
 npm run deploy                           # 构建并部署
 ```
 
-然后在 Cloudflare Dashboard → Workers & Pages → `mmwx-probe` → Settings → Variables and Secrets，添加文本变量：
+第一次执行 `secret put` 时如果 Worker 还不存在，Wrangler 会询问是否创建，选是即可。
 
-| 名称 | 类型 | 值 |
-| --- | --- | --- |
-| `MMWX_ORIGIN` | Text | 主控的 HTTPS 地址，如 `https://panel.example.com`（不带路径和结尾斜杠） |
-| `PROBE_TOKEN` | Secret | 上一步已经设置过 |
+打开 Wrangler 输出的 `*.workers.dev` 地址，确认列表、趋势图和实时刷新都正常，最后回主控开启「仅允许独立探针访问」。
 
-保存后重新部署一次让变量生效。打开 Wrangler 输出的 `*.workers.dev` 地址，确认列表、趋势图和实时刷新都正常，最后回主控开启「仅允许独立探针访问」。
-
-想换 Worker 名字就改 `wrangler.jsonc` 的 `name`。
-
-也可以用 Dashboard 的 **Import a repository** 连接你 fork 的仓库自动构建：Build command 填 `npm run build`，Deploy command 填 `./scripts/deploy.sh`，变量同上。
+- 这两个变量也可以在 Cloudflare Dashboard → Workers & Pages → `mmwx-probe` → Settings → Variables and Secrets 里添加或修改（`MMWX_ORIGIN` 用 Text、`PROBE_TOKEN` 用 Secret，保存即生效）。`wrangler.jsonc` 里的 `keep_vars: true` 保证之后重新 `npm run deploy` 不会把 Dashboard 里设的变量冲掉，别删它。
+- 想换 Worker 名字就改 `wrangler.jsonc` 的 `name`。
+- 也可以用 Dashboard 的 **Import a repository** 连接你 fork 的仓库，推送后自动构建：Build command 填 `npm run build`，Deploy command 填 `npx wrangler deploy`，变量在 Dashboard 里加。
 
 ### 3. 绑定域名（可选）
 
@@ -91,20 +87,39 @@ export const PLAN_TAG_RULES: PlanTagRule[] = [
 
 ### 壁纸和字体
 
-- 哪吒壁纸：`themes/nezha-dash/public/` 下的 `farm-background-*`（Nezha Dash）和 `beauty-background-*`（美化），分桌面版和手机版，同名替换即可。
-- 字体：`themes/nezha-dash/public/fonts/`，Premium 主题也引用这里的字体。
+- 哪吒壁纸在 `themes/nezha-dash/public/`，同名替换即可：
+
+  | 文件 | 用途 |
+  | --- | --- |
+  | `farm-background-desktop-v3.webp` / `farm-background-mobile-v3.webp` | Nezha Dash 桌面 / 手机 |
+  | `beauty-background-desktop-v3.webp` / `beauty-background-mobile-v3.webp` | Nezha 美化 桌面 / 手机 |
+
+  静态资源有一天缓存，换图后想让访客马上看到，就改个文件名，同时改 `themes/nezha-dash/src/lib/nezha-api.ts` 里对应的引用。
+- 字体：哪吒主题用 `themes/nezha-dash/public/fonts/`；Premium 主题除了引用这里的字体，还用根目录 `public/fonts/` 下的字体。
 
 ## 本地开发
 
 ```bash
 cp .dev.vars.example .dev.vars   # 填 MMWX_ORIGIN 和 PROBE_TOKEN
-npm run dev                      # 父站
-npm run dev --workspace themes/nezha-dash   # 哪吒子工程
+npm run build
+npx wrangler dev                 # 本地 Worker，监听 8787，读 .dev.vars
+```
+
+只看效果的话，直接打开 `http://127.0.0.1:8787` 就行。要改前端并热更新，保持 `wrangler dev` 运行，另开终端：
+
+```bash
+npm run dev                                  # 父站，/api 代理到 8787
+npm run dev --workspace themes/nezha-dash    # 哪吒子工程
+```
+
+检查和测试：
+
+```bash
 npm run typecheck
 npm run test:nezha-dash
 ```
 
-Node 25 及以上版本跑测试时需要加 `NODE_OPTIONS=--no-experimental-webstorage`（Node 自带的 localStorage 会盖掉 jsdom 的那个），部分日期测试需要 `TZ=UTC`。
+Node 25 及以上版本跑测试时要加 `NODE_OPTIONS=--no-experimental-webstorage`（Node 自带的 localStorage 会盖掉 jsdom 的那个）。
 
 ## 工作原理
 
